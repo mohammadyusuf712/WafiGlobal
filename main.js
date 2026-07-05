@@ -9,9 +9,9 @@ const translations = {
     navProducts: "Products",
     navContact: "Contact Us",
     navExportsImports: "Exports / Imports",
-    heroTitle: "Building the Future with Automotive and Industrial Solutions",
+    heroTitle: "Building the Future Through Quality and Innovation",
     heroSubtitle:
-      "Your trusted partner in high-quality machine parts and automotive solutions",
+      "Your trusted partner in high-quality industrial, electrical, and automotive solutions",
     heroBtnGetStarted: "Get Started",
     heroBtnBrowseProducts: "Browse Products",
     featuresTitle: "Why Choose Us",
@@ -87,10 +87,10 @@ const translations = {
     product3Point3: "Precision Components",
     product3Point4: "Automation Systems",
     product4Title: "Electronic Appliances",
-    product4Point1: "Smart Home Devices",
-    product4Point2: "Kitchen Appliances",
-    product4Point3: "Audio & Entertainment Systems",
-    product4Point4: "Small Electrical Appliances",
+    product4Point1: "Industrial Electrical Equipment",
+    product4Point2: "Energy Metering Solutions",
+    product4Point3: "Power Monitoring Systems",
+    product4Point4: "Electrical Measuring Instruments",
     product5Title: "Lighting",
     product5Point1: "LED Fixtures",
     product5Point2: "Industrial Lighting",
@@ -637,85 +637,6 @@ document.addEventListener("DOMContentLoaded", () => {
     { passive: true },
   );
 
-  // --- Intersection Observer (Animations) - Fixed to prevent re-animation glitch ---
-  let observer = null;
-  let observedElements = new Set();
-
-  const initializeObserver = () => {
-    // Destroy previous observer
-    if (observer) {
-      observer.disconnect();
-    }
-
-    // Reset observed elements
-    observedElements.clear();
-
-    // Adaptive threshold based on device type
-    const threshold = responsiveState.isMobile ? 0.2 : 0.15;
-
-    const observerOptions = {
-      threshold: threshold,
-      rootMargin: responsiveState.isMobile
-        ? "50px 0px 50px 0px"
-        : "0px 0px -50px 0px",
-    };
-
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        // Only animate if not already animated and in viewport
-        if (
-          entry.isIntersecting &&
-          !entry.target.classList.contains("animate-fade-in")
-        ) {
-          entry.target.classList.add("animate-fade-in");
-          observedElements.add(entry.target);
-          // Unobserve after animation to prevent re-triggering glitch
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    // Batch observe elements
-    const elementsToObserve = [
-      ".feature-card",
-      ".product-card",
-      ".vm-card",
-      ".value-card",
-      ".timeline-item",
-      ".section-header",
-      ".stat-item",
-      ".contact-info-item",
-      ".contact-form",
-      ".footer-col",
-    ];
-
-    // Use requestAnimationFrame to batch DOM reads/writes
-    requestAnimationFrame(() => {
-      elementsToObserve.forEach((selector) => {
-        document.querySelectorAll(selector).forEach((el) => {
-          // Skip if already observed
-          if (
-            !observedElements.has(el) &&
-            !el.classList.contains("animate-fade-in")
-          ) {
-            observer.observe(el);
-          }
-        });
-      });
-    });
-  };
-
-  // Initialize observer on load
-  initializeObserver();
-
-  // Re-initialize on responsive breakpoint change
-  window.addEventListener(
-    "resize",
-    debounce(() => {
-      initializeObserver();
-    }, 300),
-  );
-
   // --- Contact Form (EmailJS) ---
   const contactForm = document.getElementById("contactForm");
   const submitBtn = document.getElementById("submitBtn");
@@ -796,62 +717,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- Stats Counter (Optimized with RAF to prevent glitch) ---
-  const statsSection = document.querySelector(".stats");
-  let statsAnimated = false;
-
-  const animateStats = () => {
-    if (statsAnimated) return;
-    statsAnimated = true;
-
-    document.querySelectorAll(".stat-number").forEach((stat) => {
-      const targetValueText = stat.textContent || stat.innerText;
-      const suffix = targetValueText.match(/[\+%k]+/)
-        ? targetValueText.match(/[\+%k]+/)[0]
-        : "";
-      const targetNumber = parseInt(targetValueText.replace(/[\+%k]+/, ""));
-
-      if (isNaN(targetNumber)) {
-        console.warn("Stat target is not a number:", targetValueText);
-        return;
-      }
-
-      let current = 0;
-      const duration = 1500;
-      const startTime = performance.now();
-
-      const updateStat = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Easing function for smooth animation
-        const easeOutQuad = 1 - Math.pow(1 - progress, 2);
-        current = Math.floor(targetNumber * easeOutQuad);
-
-        stat.innerText = `${current}${suffix}`;
-
-        if (progress < 1) {
-          requestAnimationFrame(updateStat);
-        } else {
-          stat.innerText = `${targetNumber}${suffix}`;
-        }
-      };
-
-      requestAnimationFrame(updateStat);
-    });
-  };
-
-  const statsObserver = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && !statsAnimated) {
-        animateStats();
-        statsObserver.unobserve(statsSection);
-      }
-    },
-    { threshold: 0.5 },
-  );
-
-  if (statsSection) {
-    statsObserver.observe(statsSection);
-  }
 });
