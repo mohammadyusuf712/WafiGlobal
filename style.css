@@ -190,13 +190,13 @@ p { margin-bottom: var(--space-md); color: var(--text-secondary); font-size: cla
 @keyframes gradientFlow{0%,100%{background-position:0 50%;filter:hue-rotate(0)}50%{background-position:100% 50%;filter:hue-rotate(20deg)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Pre-animation state - invisible until animated */
+/* Scroll-reveal sections now render normally to avoid scroll jank */
 .feature-card, .product-card, .vm-card, .value-card, .timeline-item, .section-header, .stat-item, .contact-info-item, .contact-form, .footer-col {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(80px);
-    filter: blur(10px);
-    will-change: opacity, visibility, transform, filter;
+   opacity: 1;
+   visibility: visible;
+   transform: none;
+   filter: none;
+   will-change: auto;
 }
 
 .animate-fade-in { opacity: 1; visibility: visible; transform: translateY(0); filter: blur(0); animation: fadeInUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
